@@ -9,6 +9,9 @@
     "type": "git"
   },
   "packageManager": "yarn@4.12.0",
+  "engines": {
+    "node": ">=20.0.0"
+  },
   "type": "module",
   "scripts": {
     "dev": "nuxt dev",
