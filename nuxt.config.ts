@@ -39,6 +39,15 @@ export default defineNuxtConfig({
     strict: true,
   },
   compatibilityDate: "2025-03-01",
+  vite: {
+    optimizeDeps: {
+      include: [
+        "@vue/devtools-core",
+        "@vue/devtools-kit",
+        "node-vibrant/browser",
+      ],
+    },
+  },
   nitro: {
     preset: "cloudflare_module",
     /** Required for Workers static assets + node compatibility (Buffer, crypto, etc.). */
