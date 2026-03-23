@@ -6,38 +6,36 @@ A simple app to display your currently playing Spotify track on a Raspberry Pi, 
 
 Nowify will:
 
-* ✅ - Use Spotify Web API to get your current track
-* ✅ - Only access that and no other data
-* ✅ - Use Access and Refresh Tokens to ensure that you're kept logged in between sessions
-* ✅ - Display the current track artist, cover, and a matching vibrant background colour
-
-Preview:
-![Nowify Preview Image 1](assets/preview-1.png?raw=true "Nowify preview image, cover art for the song 'Wherever you go' by The Avalanches and Jamie xx")
-![Nowify Preview Image 2](assets/preview-2.png?raw=true "Nowify preview image, cover art for the song 'Gas Drawls' by MF DOOM")
-![Nowify Preview Image 3](assets/preview-3.png?raw=true "Nowify preview image, cover art for the song '有吗炒面' by Lexie Liu")
+- ✅ - Use Spotify Web API to get your current track
+- ✅ - Only access that and no other data
+- ✅ - Use Access and Refresh Tokens to ensure that you're kept logged in between sessions
+- ✅ - Display the current track artist, cover, and a matching vibrant background colour
 
 Nowify needs a webserver to run. The quickest way to get up and running is to use a Jamstack platform like Netlify or GitHub Pages.
 
-* Fork this repository
-* Connect your repo to your Jamstack platform
-* Add your Spotify Client ID and Client Secret to the platforms environment variables
-* Deploy!
+- Fork this repository
+- Connect your repo to your Jamstack platform
+- Add your Spotify Client ID and Client Secret to the platforms environment variables
+- Deploy!
 
 ---
+
 # How to use
 
 **Prerequisites:**
 You will need:
-* A GitHub account
-* A [Netlify](https://netlify.com) account
-* Spotify Client Keys
-* A device to display Nowify
+
+- A GitHub account
+- A [Netlify](https://netlify.com) account
+- Spotify Client Keys
+- A device to display Nowify
 
 ### 1. Fork this repository
 
 On this page, click on the 'Fork' button in the top-right to create a copy of the repo as-is on your account. Alternatively, you can clone the repo and push to GitHub.
 
 ### 2. Create a new project on Netlify
+
 Log in to Netlify and click 'New site from Git'.
 
 If you're doing this for the first time, you will need to authorise your GitHub account with Netlify by following the instructions.
@@ -49,6 +47,7 @@ Click on 'Deploy site'.
 _Note: Nowify should use Node 14. This has been set in the project environment. I've only ever attempted this Netlify, so cannot help you if you use another platform._
 
 ### 3. Create Spotify Client keys.
+
 To allow authorisation to your track data, you'll need to generate Spotify API keys. You can do this by logging in to the [Spotify Dashboard](https://developer.spotify.com/dashboard/applications) creating an app.
 
 Call the application 'Nowify'.
@@ -82,7 +81,9 @@ Alternatively, you can clone the repo, compile the code offline, and upload to y
 ---
 
 ### Original Write up:
+
 [https://ashcroft.dev/blog/now-playing-screen-spotify-raspberry-pi-es6/](https://ashcroft.dev/blog/now-playing-screen-spotify-raspberry-pi-es6/)
 
 ### Brief About:
+
 Nowify was a project that I originally made in 2017 when I wanted to learn more modern Javascript. Over the years, I've learned a lot more and had people contact me about Nowify, so I wanted to build a more modern version of it using modern tools. This is still a learning exercise, but hopefully one that's more usable. If you'd like to view the old repository, that can be found on the `old` branch.

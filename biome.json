@@ -12,7 +12,8 @@
       "!**/.nuxt",
       "!**/.output",
       "!**/node_modules",
-      "!**/dist"
+      "!**/dist",
+      "!**/.wrangler"
     ]
   },
   "formatter": {
@@ -49,7 +50,7 @@
       }
     },
     {
-      "includes": ["assets/css/main.css"],
+      "includes": ["app/assets/css/main.css"],
       "linter": {
         "rules": {
           "suspicious": {
