@@ -2,6 +2,7 @@ import type { Ref } from "vue"
 import { onBeforeUnmount, onMounted, ref, watch } from "vue"
 import type { NowPlayingPlayerState, PlayerAction } from "~/types/spotify"
 import { getEmptyPlayer } from "~/types/spotify"
+import { bestAlbumCoverUrl } from "~/utils/albumCoverPick"
 
 const CONTROL_ERROR_MS = 5000
 
@@ -32,7 +33,14 @@ export function useSpotifyPlayback(options: {
         id: string
         name: string
         artists: { name: string }[]
-        album: { name: string; images: { url: string }[] }
+        album: {
+          name: string
+          images: {
+            url: string
+            width?: number | null
+            height?: number | null
+          }[]
+        }
       }
     }
 
@@ -48,10 +56,16 @@ export function useSpotifyPlayback(options: {
     }
 
     const playing = Boolean(res.is_playing)
+    const coverUrl = bestAlbumCoverUrl(item.album.images)
 
     if (item.id === playerData.value.trackId) {
-      if (playerData.value.playing !== playing) {
-        playerData.value = { ...playerData.value, playing }
+      playerData.value = {
+        ...playerData.value,
+        playing,
+        trackAlbum: {
+          title: item.album.name,
+          image: coverUrl,
+        },
       }
       return
     }
@@ -63,7 +77,7 @@ export function useSpotifyPlayback(options: {
       trackId: item.id,
       trackAlbum: {
         title: item.album.name,
-        image: item.album.images[0]?.url,
+        image: coverUrl,
       },
     }
   }
