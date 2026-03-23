@@ -1,7 +1,7 @@
 <template>
   <div
     id="app"
-    class="flex min-h-screen w-full flex-col bg-[var(--colour-background-now-playing)] text-[var(--color-text-primary)] transition-theme"
+    class="flex min-h-screen w-full flex-col bg-black text-[var(--color-text-primary)] transition-theme"
   >
     <Transition name="nowify-panel" mode="out-in">
       <div
@@ -42,28 +42,11 @@
           />
         </div>
       </div>
-      <div
-        v-else
-        key="idle"
-        class="flex flex-1 flex-col items-center justify-center p-[var(--spacing-l)] md:flex-row md:p-[10%]"
-      >
-        <div class="flex flex-col items-center text-center">
-          <h1>No music is playing</h1>
-          <PlayerControlBar
-            class="!px-0 pt-[var(--spacing-l)]"
-            :control-pending="controlPending"
-            :playing="player.playing"
-            :queue-open="queueOpen"
-            @control="sendControl"
-            @open-queue="openQueue"
-          />
-        </div>
-      </div>
     </Transition>
 
     <Transition name="nowify-err">
       <p
-        v-if="controlError"
+        v-if="controlError && player.trackTitle"
         :key="controlError"
         class="pb-[var(--spacing-m)] text-center text-sm opacity-80"
         role="status"
