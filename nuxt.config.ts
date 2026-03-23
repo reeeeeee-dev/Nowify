@@ -34,4 +34,22 @@ export default defineNuxtConfig({
     strict: true,
   },
   compatibilityDate: "2025-03-01",
+  nitro: {
+    preset: "cloudflare_module",
+    /** Required for Workers static assets + node compatibility (Buffer, crypto, etc.). */
+    compatibilityDate: "2025-03-01",
+    cloudflare: {
+      deployConfig: true,
+      nodeCompat: true,
+      wrangler: {
+        name: "nowify",
+        routes: [
+          {
+            pattern: "now-playing.reetikpatel.me/*",
+            zone_name: "reetikpatel.me",
+          },
+        ],
+      },
+    },
+  },
 })

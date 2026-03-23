@@ -15,6 +15,8 @@
     "build": "nuxt build",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
+    "deploy:cloudflare": "nuxt build && wrangler --cwd .output deploy",
+    "preview:cloudflare": "nuxt build && wrangler --cwd .output dev",
     "postinstall": "nuxt prepare",
     "lint": "biome check .",
     "lint:fix": "biome check --write .",
@@ -28,6 +30,7 @@
   "devDependencies": {
     "@biomejs/biome": "^2.4.8",
     "@nuxtjs/tailwindcss": "^6.14.0",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "wrangler": "^4.54.0"
   }
 }
