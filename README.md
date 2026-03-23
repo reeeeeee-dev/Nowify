@@ -18,6 +18,16 @@ Nowify needs a webserver to run. The quickest way to get up and running is to us
 - Add your Spotify Client ID and Client Secret to the platforms environment variables
 - Deploy!
 
+### Cloudflare Workers (this repo)
+
+This project uses the Nitro `cloudflare_module` preset (`yarn deploy:cloudflare`). The `NUXT_SESSION_SECRET` used to encrypt cookies is **not** taken from the machine that runs `nuxt build` in CI — it must be set on the **Worker** in Cloudflare so it is stable across deploys:
+
+1. **Set `NUXT_SPOTIFY_CLIENT_SECRET`** in the Cloudflare dashboard (or your CI) if you build with that env var, **and** set **`NUXT_PUBLIC_SPOTIFY_CLIENT_ID`** the same way.
+2. **Set `NUXT_SESSION_SECRET` once** as a Worker secret: Cloudflare dashboard → Workers & Pages → your Worker → Settings → Variables and Secrets → Secrets → add `NUXT_SESSION_SECRET`, **or** run `yarn cf:secret:session` after `nuxt build` (interactive).
+3. Use **one** long random value; do **not** generate a new secret on every deploy.
+
+If you only set `NUXT_SESSION_SECRET` in GitHub Actions for the build step but never add it as a Cloudflare Worker secret, the deployed Worker will not see it (or it may change each time you try to wire it differently), and sessions will not persist.
+
 ---
 
 # How to use

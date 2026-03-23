@@ -27,7 +27,12 @@ export default defineNuxtConfig({
     },
     /** Server-only — never exposed to the browser bundle. Set via NUXT_SPOTIFY_CLIENT_SECRET */
     spotifyClientSecret: "",
-    /** Server-only — encrypts the HttpOnly session cookie (use a long random string). */
+    /**
+     * Server-only — encrypts the HttpOnly session cookie (use a long random string).
+     * On Cloudflare Workers, set NUXT_SESSION_SECRET as a Worker secret (Dashboard or
+     * `wrangler secret put`); it is not read from the build environment unless you
+     * also configure it in Cloudflare.
+     */
     sessionSecret: "",
   },
   typescript: {

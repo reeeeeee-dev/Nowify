@@ -20,6 +20,7 @@
     "preview": "nuxt preview",
     "deploy:cloudflare": "nuxt build && wrangler --cwd .output deploy",
     "preview:cloudflare": "nuxt build && wrangler --cwd .output dev",
+    "cf:secret:session": "wrangler --cwd .output secret put NUXT_SESSION_SECRET",
     "postinstall": "nuxt prepare",
     "lint": "biome check .",
     "lint:fix": "biome check --write .",

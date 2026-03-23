@@ -62,7 +62,10 @@ function setAuthUrl() {
       Math.random().toString(36).substring(5),
     ].join("-"),
   )
-  searchParams.append("scope", "user-read-currently-playing")
+  searchParams.append(
+    "scope",
+    "user-read-currently-playing user-modify-playback-state",
+  )
   return `${props.endpoints.auth}?${searchParams.toString()}`
 }
 
