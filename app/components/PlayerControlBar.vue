@@ -1,6 +1,11 @@
 <template>
   <div
-    class="flex shrink-0 flex-wrap items-center justify-center gap-4 px-[var(--spacing-l)] pb-[var(--spacing-xl)] pt-[var(--spacing-m)]"
+    :class="[
+      'flex shrink-0 flex-wrap items-center gap-4 px-[var(--spacing-l)] pb-[var(--spacing-xl)] pt-[var(--spacing-m)]',
+      justify === 'start' && 'justify-start',
+      justify === 'center' && 'justify-center',
+      justify === 'responsive' && 'justify-center md:justify-start',
+    ]"
   >
     <button
       type="button"
@@ -103,11 +108,15 @@ import {
   PLAYER_PLAY_PAUSE_BUTTON_CLASS,
 } from "~/utils/playerUi"
 
-defineProps<{
-  controlPending: boolean
-  playing: boolean
-  queueOpen: boolean
-}>()
+withDefaults(
+  defineProps<{
+    controlPending: boolean
+    playing: boolean
+    queueOpen: boolean
+    justify?: "center" | "start" | "responsive"
+  }>(),
+  { justify: "center" },
+)
 
 const emit = defineEmits<{
   control: [action: PlayerAction]

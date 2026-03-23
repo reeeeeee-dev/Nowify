@@ -23,7 +23,7 @@
           </Transition>
         </div>
         <div
-          class="w-full p-[var(--spacing-m)] text-center md:w-1/2 md:max-w-[495px] md:text-left"
+          class="flex w-full flex-col p-[var(--spacing-m)] text-center md:w-1/2 md:max-w-[495px] md:text-left"
         >
           <Transition name="nowify-text" mode="out-in">
             <div :key="trackVisualKey">
@@ -31,6 +31,15 @@
               <h2 class="opacity-80">{{ trackArtistsLabel }}</h2>
             </div>
           </Transition>
+          <PlayerControlBar
+            class="!px-0 pt-[var(--spacing-l)]"
+            justify="responsive"
+            :control-pending="controlPending"
+            :playing="player.playing"
+            :queue-open="queueOpen"
+            @control="sendControl"
+            @open-queue="openQueue"
+          />
         </div>
       </div>
       <div
@@ -38,17 +47,19 @@
         key="idle"
         class="flex flex-1 flex-col items-center justify-center p-[var(--spacing-l)] md:flex-row md:p-[10%]"
       >
-        <h1 class="text-center">No music is playing 😔</h1>
+        <div class="flex flex-col items-center text-center">
+          <h1>No music is playing 😔</h1>
+          <PlayerControlBar
+            class="!px-0 pt-[var(--spacing-l)]"
+            :control-pending="controlPending"
+            :playing="player.playing"
+            :queue-open="queueOpen"
+            @control="sendControl"
+            @open-queue="openQueue"
+          />
+        </div>
       </div>
     </Transition>
-
-    <PlayerControlBar
-      :control-pending="controlPending"
-      :playing="player.playing"
-      :queue-open="queueOpen"
-      @control="sendControl"
-      @open-queue="openQueue"
-    />
 
     <Transition name="nowify-err">
       <p
