@@ -1,5 +1,4 @@
 import type { QueueMedia } from "~/types/spotify"
-import { bestAlbumCoverUrl } from "~/utils/albumCoverPick"
 
 export function queueItemTitle(item: QueueMedia): string {
   return item.name?.trim() || "Unknown"
@@ -16,7 +15,7 @@ export function queueItemSubtitle(item: QueueMedia): string {
 }
 
 export function queueItemImage(item: QueueMedia): string | undefined {
-  const fromAlbum = bestAlbumCoverUrl(item.album?.images)
+  const fromAlbum = item.album?.images?.[0]?.url
   if (fromAlbum) {
     return fromAlbum
   }
