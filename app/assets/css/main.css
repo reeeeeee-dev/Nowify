@@ -71,6 +71,24 @@
     @apply text-[1.2em] leading-snug;
   }
 
+  /* Full HD kiosk / wall display: larger type and rhythm */
+  @media (min-width: 1920px) {
+    :root {
+      --font-size-base: 20px;
+      --spacing-m: 1.25rem;
+      --spacing-l: 2rem;
+      --spacing-xl: 2.75rem;
+    }
+
+    h1 {
+      @apply text-[2.5em];
+    }
+
+    h2 {
+      @apply text-[1.75em];
+    }
+  }
+
   @media (prefers-reduced-motion: reduce) {
     *,
     *::before,

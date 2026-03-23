@@ -7,23 +7,23 @@
       <div
         v-if="player.trackTitle"
         key="playing"
-        class="flex flex-1 flex-col items-center justify-center gap-0 p-[var(--spacing-l)] md:flex-row md:p-[10%]"
+        class="flex flex-1 flex-wrap flex-col items-center justify-center gap-10 p-[var(--spacing-l)] md:px-[clamp(2rem,6vw,6rem)] md:py-[clamp(2rem,5vh,4rem)] md:landscape:flex-row md:landscape:items-center md:landscape:justify-center md:landscape:gap-x-16 md:landscape:gap-y-10 min-[1920px]:landscape:gap-x-24"
       >
         <div
           v-if="player.trackAlbum?.image"
-          class="w-full max-w-[400px] p-[var(--spacing-m)] text-center md:w-1/2 md:max-w-[495px]"
+          class="flex w-full max-w-[min(100%,24rem)] flex-col items-center justify-center p-[var(--spacing-m)] text-center md:landscape:min-w-0 md:landscape:max-w-[640px] md:landscape:flex-1 md:landscape:basis-0 min-[1920px]:landscape:max-w-[720px]"
         >
           <Transition name="nowify-art" mode="out-in">
             <img
               :key="trackVisualKey"
               :src="player.trackAlbum.image"
               :alt="player.trackTitle"
-              class="h-auto w-full max-w-[60vw] shadow-[0_0_0_1px_rgba(255,255,255,0.12)]"
+              class="mx-auto h-auto w-full max-w-[60vw] shadow-[0_0_0_1px_rgba(255,255,255,0.12)] md:landscape:max-w-full"
             />
           </Transition>
         </div>
         <div
-          class="flex w-full flex-col p-[var(--spacing-m)] text-center md:w-1/2 md:max-w-[495px] md:text-left"
+          class="flex w-full min-w-0 flex-col items-center justify-center p-[var(--spacing-m)] text-center md:landscape:max-w-[640px] md:landscape:flex-1 md:landscape:basis-0 md:landscape:items-start md:landscape:text-left min-[1920px]:landscape:max-w-[720px]"
         >
           <Transition name="nowify-text" mode="out-in">
             <div :key="trackVisualKey">

@@ -1,10 +1,10 @@
 <template>
   <div
     :class="[
-      'flex shrink-0 flex-wrap items-center gap-4 px-[var(--spacing-l)] pb-[var(--spacing-xl)] pt-[var(--spacing-m)]',
+      'flex shrink-0 flex-wrap items-center gap-4 min-[1920px]:gap-6 px-[var(--spacing-l)] pb-[var(--spacing-xl)] pt-[var(--spacing-m)]',
       justify === 'start' && 'justify-start',
       justify === 'center' && 'justify-center',
-      justify === 'responsive' && 'justify-center md:justify-start',
+      justify === 'responsive' && 'justify-center md:landscape:justify-start',
     ]"
   >
     <button
@@ -15,7 +15,7 @@
       @click="emit('control', 'previous')"
     >
       <svg
-        class="h-7 w-7"
+        class="h-7 w-7 min-[1920px]:h-9 min-[1920px]:w-9"
         viewBox="0 0 24 24"
         fill="currentColor"
         aria-hidden="true"
@@ -23,7 +23,9 @@
         <path d="M6 6h2v12H6V6zm3.5 6 8.5-5v10l-8.5-5z" />
       </svg>
     </button>
-    <span class="relative inline-flex h-16 w-16 items-center justify-center">
+    <span
+      class="relative inline-flex h-16 w-16 min-[1920px]:h-20 min-[1920px]:w-20 items-center justify-center"
+    >
       <Transition name="nowify-play" mode="out-in">
         <button
           v-if="playing"
@@ -35,7 +37,7 @@
           @click="emit('control', 'pause')"
         >
           <svg
-            class="h-8 w-8"
+            class="h-8 w-8 min-[1920px]:h-10 min-[1920px]:w-10"
             viewBox="0 0 24 24"
             fill="currentColor"
             aria-hidden="true"
@@ -53,7 +55,7 @@
           @click="emit('control', 'play')"
         >
           <svg
-            class="h-8 w-8 pl-1"
+            class="h-8 w-8 min-[1920px]:h-10 min-[1920px]:w-10 pl-1"
             viewBox="0 0 24 24"
             fill="currentColor"
             aria-hidden="true"
@@ -71,7 +73,7 @@
       @click="emit('control', 'next')"
     >
       <svg
-        class="h-7 w-7"
+        class="h-7 w-7 min-[1920px]:h-9 min-[1920px]:w-9"
         viewBox="0 0 24 24"
         fill="currentColor"
         aria-hidden="true"
@@ -88,7 +90,7 @@
       @click="emit('open-queue')"
     >
       <svg
-        class="h-7 w-7"
+        class="h-7 w-7 min-[1920px]:h-9 min-[1920px]:w-9"
         viewBox="0 0 24 24"
         fill="currentColor"
         aria-hidden="true"
