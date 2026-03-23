@@ -1,3 +1,4 @@
+import { applyCatalogAlbumImagesToTrack } from "../../utils/spotifyAlbumCatalog"
 import {
   clearSessionCookie,
   refreshSessionIfNeeded,
@@ -65,5 +66,18 @@ export default defineEventHandler(async (event) => {
     return parsed
   }
 
-  return await res.json()
+  const body = (await res.json()) as {
+    currently_playing?: unknown
+    queue?: unknown[]
+  }
+  await applyCatalogAlbumImagesToTrack(
+    session.accessToken,
+    body.currently_playing,
+  )
+  if (Array.isArray(body.queue)) {
+    for (const item of body.queue) {
+      await applyCatalogAlbumImagesToTrack(session.accessToken, item)
+    }
+  }
+  return body
 })
