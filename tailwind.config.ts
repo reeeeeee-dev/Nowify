@@ -44,9 +44,6 @@ export default {
           "sans-serif",
         ],
       },
-      colors: {
-        spotify: "#1DB954",
-      },
     },
   },
   plugins: [],

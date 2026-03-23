@@ -41,11 +41,7 @@ export default defineNuxtConfig({
   compatibilityDate: "2025-03-01",
   vite: {
     optimizeDeps: {
-      include: [
-        "@vue/devtools-core",
-        "@vue/devtools-kit",
-        "node-vibrant/browser",
-      ],
+      include: ["@vue/devtools-core", "@vue/devtools-kit"],
     },
   },
   nitro: {

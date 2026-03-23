@@ -16,7 +16,7 @@
 
     <button
       type="button"
-      class="mb-[var(--spacing-l)] inline-flex min-h-8 cursor-pointer items-center justify-center border border-transparent bg-spotify px-[var(--spacing-xl)] py-[var(--spacing-l)] text-center uppercase tracking-wide text-[var(--color-text-primary)] shadow-none transition-interactive hover:scale-[1.02] active:scale-[0.98] animate-fade-up opacity-0"
+      class="mb-[var(--spacing-l)] inline-flex min-h-8 cursor-pointer items-center justify-center border border-white/35 bg-transparent px-[var(--spacing-xl)] py-[var(--spacing-l)] text-center uppercase tracking-wide text-[var(--color-text-primary)] shadow-none transition-interactive hover:border-white/55 hover:bg-white/10 hover:scale-[1.02] active:scale-[0.98] animate-fade-up opacity-0"
       style="animation-delay: 200ms"
       @click="initAuthorise"
     >

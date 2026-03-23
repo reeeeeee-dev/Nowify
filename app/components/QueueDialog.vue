@@ -9,15 +9,15 @@
         aria-labelledby="queue-dialog-title"
       >
         <div
-          class="absolute inset-0 bg-black/55"
+          class="absolute inset-0 bg-white/12"
           aria-hidden="true"
           @click="open = false"
         />
         <div
-          class="nowify-queue-panel relative flex max-h-[min(85vh,640px)] w-full max-w-lg flex-col rounded-t-2xl border border-current/20 bg-[var(--colour-background-now-playing)] text-[var(--color-text-primary)] shadow-lg md:rounded-2xl"
+          class="nowify-queue-panel relative flex max-h-[min(85vh,640px)] w-full max-w-lg flex-col rounded-t-2xl border border-white/20 bg-black text-[var(--color-text-primary)] shadow-[0_8px_40px_rgba(0,0,0,0.85)] md:rounded-2xl"
         >
           <div
-            class="flex items-center justify-between gap-3 border-b border-current/15 px-4 py-3"
+            class="flex items-center justify-between gap-3 border-b border-white/15 px-4 py-3"
           >
             <h2 id="queue-dialog-title" class="text-lg font-semibold">
               Queue
@@ -25,7 +25,7 @@
             <div class="flex items-center gap-2">
               <button
                 type="button"
-                class="rounded-full border border-current/25 bg-black/15 px-3 py-1.5 text-sm transition-interactive hover:bg-black/25 hover:scale-[1.02] active:scale-[0.98] disabled:opacity-40 disabled:hover:scale-100"
+                class="rounded-full border border-white/25 bg-white/10 px-3 py-1.5 text-sm transition-interactive hover:bg-white/18 hover:scale-[1.02] active:scale-[0.98] disabled:opacity-40 disabled:hover:scale-100"
                 :disabled="loading"
                 @click="emit('refresh')"
               >
@@ -33,7 +33,7 @@
               </button>
               <button
                 type="button"
-                class="flex h-10 w-10 items-center justify-center rounded-full border border-current/25 bg-black/15 transition-interactive hover:bg-black/25 hover:scale-105 active:scale-95"
+                class="flex h-10 w-10 items-center justify-center rounded-full border border-white/25 bg-white/10 transition-interactive hover:bg-white/18 hover:scale-105 active:scale-95"
                 aria-label="Close queue"
                 @click="open = false"
               >
@@ -70,7 +70,7 @@
                   Now playing
                 </h3>
                 <div
-                  class="flex gap-3 rounded-lg border border-current/15 bg-black/10 p-2"
+                  class="flex gap-3 rounded-lg border border-white/15 bg-white/5 p-2"
                 >
                   <img
                     v-if="queueItemImage(currentlyPlaying)"
@@ -80,7 +80,7 @@
                   />
                   <div
                     v-else
-                    class="flex h-14 w-14 shrink-0 items-center justify-center rounded bg-black/20 text-xs opacity-60"
+                    class="flex h-14 w-14 shrink-0 items-center justify-center rounded bg-white/10 text-xs opacity-60"
                   >
                     —
                   </div>
@@ -107,7 +107,7 @@
                     :key="queueItemKey(item, index)"
                   >
                     <div
-                      class="flex gap-3 rounded-lg p-2 opacity-95 transition-interactive hover:bg-black/10"
+                      class="flex gap-3 rounded-lg p-2 opacity-95 transition-interactive hover:bg-white/8"
                     >
                       <img
                         v-if="queueItemImage(item)"
@@ -117,7 +117,7 @@
                       />
                       <div
                         v-else
-                        class="flex h-12 w-12 shrink-0 items-center justify-center rounded bg-black/15 text-xs opacity-60"
+                        class="flex h-12 w-12 shrink-0 items-center justify-center rounded bg-white/10 text-xs opacity-60"
                       >
                         {{ index + 1 }}
                       </div>
@@ -145,7 +145,7 @@
           </div>
 
           <div
-            class="border-t border-current/15 px-4 py-3 text-xs leading-relaxed opacity-75"
+            class="border-t border-white/15 px-4 py-3 text-xs leading-relaxed opacity-75"
           >
             <p class="font-medium opacity-90">Not available via Spotify’s Web API</p>
             <ul class="mt-1 list-disc pl-4">

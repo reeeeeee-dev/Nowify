@@ -18,7 +18,7 @@
               :key="trackVisualKey"
               :src="player.trackAlbum.image"
               :alt="player.trackTitle"
-              class="h-auto w-full max-w-[60vw] shadow-[1px_1px_16px_-2px_rgba(0,0,0,0.3)]"
+              class="h-auto w-full max-w-[60vw] shadow-[0_0_0_1px_rgba(255,255,255,0.12)]"
             />
           </Transition>
         </div>
@@ -48,7 +48,7 @@
         class="flex flex-1 flex-col items-center justify-center p-[var(--spacing-l)] md:flex-row md:p-[10%]"
       >
         <div class="flex flex-col items-center text-center">
-          <h1>No music is playing 😔</h1>
+          <h1>No music is playing</h1>
           <PlayerControlBar
             class="!px-0 pt-[var(--spacing-l)]"
             :control-pending="controlPending"
@@ -128,8 +128,6 @@ const {
 } = useSpotifyQueue({
   onUnauthorized: playback.handleUnauthorized,
 })
-
-useAlbumPalette(computed(() => playback.playerData.value.trackAlbum?.image))
 
 const trackArtistsLabel = computed(() => props.player.trackArtists.join(", "))
 
