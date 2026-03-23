@@ -32,7 +32,7 @@
     </div>
 
     <div
-      class="flex shrink-0 items-center justify-center gap-4 px-[var(--spacing-l)] pb-[var(--spacing-xl)] pt-[var(--spacing-m)]"
+      class="flex shrink-0 flex-wrap items-center justify-center gap-4 px-[var(--spacing-l)] pb-[var(--spacing-xl)] pt-[var(--spacing-m)]"
     >
       <button
         type="button"
@@ -104,6 +104,25 @@
           />
         </svg>
       </button>
+      <button
+        type="button"
+        class="flex h-14 w-14 items-center justify-center rounded-full border border-current/25 bg-black/15 text-[var(--color-text-primary)] transition-opacity hover:bg-black/25 disabled:cursor-not-allowed disabled:opacity-40"
+        :disabled="controlPending"
+        aria-label="View queue"
+        :aria-expanded="queueOpen"
+        @click="openQueue"
+      >
+        <svg
+          class="h-7 w-7"
+          viewBox="0 0 24 24"
+          fill="currentColor"
+          aria-hidden="true"
+        >
+          <path
+            d="M3 5h14v2H3V5zm0 6h14v2H3v-2zm0 6h10v2H3v-2zm13-4v6l5-3-5-3z"
+          />
+        </svg>
+      </button>
     </div>
     <p
       v-if="controlError"
@@ -112,6 +131,166 @@
     >
       {{ controlError }}
     </p>
+
+    <Teleport to="body">
+      <div
+        v-if="queueOpen"
+        class="fixed inset-0 z-[100] flex items-end justify-center p-0 md:items-center md:p-6"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="queue-dialog-title"
+      >
+        <div
+          class="absolute inset-0 bg-black/55"
+          aria-hidden="true"
+          @click="queueOpen = false"
+        />
+        <div
+          class="relative flex max-h-[min(85vh,640px)] w-full max-w-lg flex-col rounded-t-2xl border border-current/20 bg-[var(--colour-background-now-playing)] text-[var(--color-text-primary)] shadow-lg md:rounded-2xl"
+        >
+          <div
+            class="flex items-center justify-between gap-3 border-b border-current/15 px-4 py-3"
+          >
+            <h2 id="queue-dialog-title" class="text-lg font-semibold">
+              Queue
+            </h2>
+            <div class="flex items-center gap-2">
+              <button
+                type="button"
+                class="rounded-full border border-current/25 bg-black/15 px-3 py-1.5 text-sm transition-opacity hover:bg-black/25 disabled:opacity-40"
+                :disabled="queueLoading"
+                @click="fetchQueue"
+              >
+                Refresh
+              </button>
+              <button
+                type="button"
+                class="flex h-10 w-10 items-center justify-center rounded-full border border-current/25 bg-black/15 transition-opacity hover:bg-black/25"
+                aria-label="Close queue"
+                @click="queueOpen = false"
+              >
+                <svg
+                  class="h-5 w-5"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                  aria-hidden="true"
+                >
+                  <path
+                    d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
+                  />
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <div class="min-h-0 flex-1 overflow-y-auto px-4 pb-4 pt-2">
+            <p
+              v-if="queueLoading"
+              class="py-8 text-center text-sm opacity-80"
+            >
+              Loading queue…
+            </p>
+            <p
+              v-else-if="queueError"
+              class="py-8 text-center text-sm opacity-90"
+              role="status"
+            >
+              {{ queueError }}
+            </p>
+            <template v-else>
+              <section
+                v-if="queueCurrentlyPlaying"
+                class="mb-4"
+              >
+                <h3 class="mb-2 text-xs font-medium uppercase tracking-wide opacity-70">
+                  Now playing
+                </h3>
+                <div
+                  class="flex gap-3 rounded-lg border border-current/15 bg-black/10 p-2"
+                >
+                  <img
+                    v-if="queueItemImage(queueCurrentlyPlaying)"
+                    :src="queueItemImage(queueCurrentlyPlaying)"
+                    alt=""
+                    class="h-14 w-14 shrink-0 rounded object-cover"
+                  />
+                  <div
+                    v-else
+                    class="flex h-14 w-14 shrink-0 items-center justify-center rounded bg-black/20 text-xs opacity-60"
+                  >
+                    —
+                  </div>
+                  <div class="min-w-0 flex-1">
+                    <p class="truncate font-medium">
+                      {{ queueItemTitle(queueCurrentlyPlaying) }}
+                    </p>
+                    <p class="truncate text-sm opacity-80">
+                      {{ queueItemSubtitle(queueCurrentlyPlaying) }}
+                    </p>
+                  </div>
+                </div>
+              </section>
+
+              <section v-if="queueUpNext.length">
+                <h3 class="mb-2 text-xs font-medium uppercase tracking-wide opacity-70">
+                  Up next
+                </h3>
+                <ol class="space-y-1">
+                  <li
+                    v-for="(item, index) in queueUpNext"
+                    :key="queueItemKey(item, index)"
+                  >
+                    <div
+                      class="flex gap-3 rounded-lg p-2 opacity-95"
+                    >
+                      <img
+                        v-if="queueItemImage(item)"
+                        :src="queueItemImage(item)"
+                        alt=""
+                        class="h-12 w-12 shrink-0 rounded object-cover"
+                      />
+                      <div
+                        v-else
+                        class="flex h-12 w-12 shrink-0 items-center justify-center rounded bg-black/15 text-xs opacity-60"
+                      >
+                        {{ index + 1 }}
+                      </div>
+                      <div class="min-w-0 flex-1">
+                        <p class="truncate font-medium">
+                          {{ queueItemTitle(item) }}
+                        </p>
+                        <p class="truncate text-sm opacity-80">
+                          {{ queueItemSubtitle(item) }}
+                        </p>
+                      </div>
+                    </div>
+                  </li>
+                </ol>
+              </section>
+
+              <p
+                v-if="!queueCurrentlyPlaying && queueUpNext.length === 0"
+                class="py-8 text-center text-sm opacity-80"
+              >
+                Nothing in the queue. Start playback on Spotify to see what is
+                lined up.
+              </p>
+            </template>
+          </div>
+
+          <div
+            class="border-t border-current/15 px-4 py-3 text-xs leading-relaxed opacity-75"
+          >
+            <p class="font-medium opacity-90">Not available via Spotify’s Web API</p>
+            <ul class="mt-1 list-disc pl-4">
+              <li>Skip to a specific track in the queue</li>
+              <li>Remove tracks from the queue</li>
+              <li>Reorder the queue</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </Teleport>
   </div>
 </template>
 
@@ -119,6 +298,18 @@
 import type { Palette } from "@vibrant/color"
 import { Vibrant } from "node-vibrant/browser"
 import { computed, onBeforeUnmount, onMounted, ref, watch } from "vue"
+
+/** Track or episode object from GET /me/player/queue */
+type QueueMedia = {
+  id?: string
+  uri?: string
+  name?: string
+  type?: string
+  artists?: { name: string }[]
+  show?: { name: string }
+  album?: { images?: { url: string }[] }
+  images?: { url: string }[]
+}
 
 const props = defineProps<{
   auth: {
@@ -147,7 +338,96 @@ const colourPalette = ref<{ text: string; background: string } | null>(null)
 const controlPending = ref(false)
 const controlError = ref("")
 
+const queueOpen = ref(false)
+const queueLoading = ref(false)
+const queueError = ref("")
+const queuePayload = ref<{
+  currently_playing: QueueMedia | null
+  queue: QueueMedia[]
+} | null>(null)
+
+const queueCurrentlyPlaying = computed(
+  () => queuePayload.value?.currently_playing ?? null,
+)
+const queueUpNext = computed(() => queuePayload.value?.queue ?? [])
+
 const trackArtistsLabel = computed(() => props.player.trackArtists.join(", "))
+
+function queueItemTitle(item: QueueMedia): string {
+  return item.name?.trim() || "Unknown"
+}
+
+function queueItemSubtitle(item: QueueMedia): string {
+  if (item.type === "episode" && item.show?.name) {
+    return item.show.name
+  }
+  if (item.artists?.length) {
+    return item.artists.map((a) => a.name).join(", ")
+  }
+  return ""
+}
+
+function queueItemImage(item: QueueMedia): string | undefined {
+  const fromAlbum = item.album?.images?.[0]?.url
+  if (fromAlbum) {
+    return fromAlbum
+  }
+  return item.images?.[0]?.url
+}
+
+function queueItemKey(item: QueueMedia, index: number): string {
+  return item.uri ?? item.id ?? `q-${index}`
+}
+
+async function fetchQueue() {
+  queueLoading.value = true
+  queueError.value = ""
+  try {
+    const res = await fetch("/api/spotify/queue", { credentials: "include" })
+
+    if (res.status === 401) {
+      handleExpiredToken()
+      return
+    }
+
+    if (res.status === 204) {
+      queuePayload.value = { currently_playing: null, queue: [] }
+      return
+    }
+
+    const json = (await res.json()) as Record<string, unknown>
+
+    if (!res.ok) {
+      const err = json.error as { message?: string } | undefined
+      queueError.value =
+        err?.message?.trim() ||
+        "Could not load the queue. Use Spotify Premium with an active device."
+      return
+    }
+
+    const currently = json.currently_playing as QueueMedia | null | undefined
+    const queue = json.queue as QueueMedia[] | undefined
+    queuePayload.value = {
+      currently_playing: currently ?? null,
+      queue: Array.isArray(queue) ? queue : [],
+    }
+  } catch {
+    queueError.value = "Something went wrong loading the queue."
+  } finally {
+    queueLoading.value = false
+  }
+}
+
+function openQueue() {
+  queueOpen.value = true
+  void fetchQueue()
+}
+
+function onQueueEscape(e: KeyboardEvent) {
+  if (e.key === "Escape" && queueOpen.value) {
+    queueOpen.value = false
+  }
+}
 
 type PlayerAction = "play" | "pause" | "next" | "previous"
 
@@ -356,12 +636,14 @@ function handleExpiredToken() {
 
 onMounted(() => {
   setDataInterval()
+  window.addEventListener("keydown", onQueueEscape)
 })
 
 onBeforeUnmount(() => {
   if (pollPlaying.value) {
     clearInterval(pollPlaying.value)
   }
+  window.removeEventListener("keydown", onQueueEscape)
 })
 
 watch(
