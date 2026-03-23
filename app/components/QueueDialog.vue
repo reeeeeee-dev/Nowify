@@ -19,9 +19,7 @@
           <div
             class="flex items-center justify-between gap-3 border-b border-white/15 px-4 py-3"
           >
-            <h2 id="queue-dialog-title" class="text-lg font-semibold">
-              Queue
-            </h2>
+            <h2 id="queue-dialog-title" class="text-lg font-semibold">Queue</h2>
             <div class="flex items-center gap-2">
               <button
                 type="button"
@@ -143,17 +141,6 @@
               </p>
             </template>
           </div>
-
-          <div
-            class="border-t border-white/15 px-4 py-3 text-xs leading-relaxed opacity-75"
-          >
-            <p class="font-medium opacity-90">Not available via Spotify’s Web API</p>
-            <ul class="mt-1 list-disc pl-4">
-              <li>Skip to a specific track in the queue</li>
-              <li>Remove tracks from the queue</li>
-              <li>Reorder the queue</li>
-            </ul>
-          </div>
         </div>
       </div>
     </Transition>
@@ -161,31 +148,31 @@
 </template>
 
 <script setup lang="ts">
-import { onBeforeUnmount, watch } from "vue"
-import type { QueueMedia } from "~/types/spotify"
+import { onBeforeUnmount, watch } from "vue";
+import type { QueueMedia } from "~/types/spotify";
 import {
   queueItemImage,
   queueItemKey,
   queueItemSubtitle,
   queueItemTitle,
-} from "~/utils/spotifyQueue"
+} from "~/utils/spotifyQueue";
 
-const open = defineModel<boolean>({ required: true })
+const open = defineModel<boolean>({ required: true });
 
 defineProps<{
-  loading: boolean
-  error: string
-  currentlyPlaying: QueueMedia | null
-  upNext: QueueMedia[]
-}>()
+  loading: boolean;
+  error: string;
+  currentlyPlaying: QueueMedia | null;
+  upNext: QueueMedia[];
+}>();
 
 const emit = defineEmits<{
-  refresh: []
-}>()
+  refresh: [];
+}>();
 
 function onEscape(e: KeyboardEvent) {
   if (e.key === "Escape" && open.value) {
-    open.value = false
+    open.value = false;
   }
 }
 
@@ -193,17 +180,17 @@ watch(
   open,
   (isOpen) => {
     if (isOpen) {
-      window.addEventListener("keydown", onEscape)
+      window.addEventListener("keydown", onEscape);
     } else {
-      window.removeEventListener("keydown", onEscape)
+      window.removeEventListener("keydown", onEscape);
     }
   },
   { immediate: true },
-)
+);
 
 onBeforeUnmount(() => {
-  window.removeEventListener("keydown", onEscape)
-})
+  window.removeEventListener("keydown", onEscape);
+});
 </script>
 
 <style scoped>
