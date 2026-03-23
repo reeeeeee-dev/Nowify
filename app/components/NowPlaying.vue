@@ -1,42 +1,53 @@
 <template>
   <div
     id="app"
-    class="flex min-h-screen w-full flex-col bg-[var(--colour-background-now-playing)] text-[var(--color-text-primary)]"
+    class="flex min-h-screen w-full flex-col bg-[var(--colour-background-now-playing)] text-[var(--color-text-primary)] transition-theme"
   >
-    <div
-      v-if="player.trackTitle"
-      class="flex flex-1 flex-col items-center justify-center gap-0 p-[var(--spacing-l)] md:flex-row md:p-[10%]"
-    >
+    <Transition name="nowify-panel" mode="out-in">
       <div
-        v-if="player.trackAlbum?.image"
-        class="w-full max-w-[400px] p-[var(--spacing-m)] text-center md:w-1/2 md:max-w-[495px]"
+        v-if="player.trackTitle"
+        key="playing"
+        class="flex flex-1 flex-col items-center justify-center gap-0 p-[var(--spacing-l)] md:flex-row md:p-[10%]"
       >
-        <img
-          :src="player.trackAlbum.image"
-          :alt="player.trackTitle"
-          class="h-auto w-full max-w-[60vw] shadow-[1px_1px_16px_-2px_rgba(0,0,0,0.3)]"
-        />
+        <div
+          v-if="player.trackAlbum?.image"
+          class="w-full max-w-[400px] p-[var(--spacing-m)] text-center md:w-1/2 md:max-w-[495px]"
+        >
+          <Transition name="nowify-art" mode="out-in">
+            <img
+              :key="trackVisualKey"
+              :src="player.trackAlbum.image"
+              :alt="player.trackTitle"
+              class="h-auto w-full max-w-[60vw] shadow-[1px_1px_16px_-2px_rgba(0,0,0,0.3)]"
+            />
+          </Transition>
+        </div>
+        <div
+          class="w-full p-[var(--spacing-m)] text-center md:w-1/2 md:max-w-[495px] md:text-left"
+        >
+          <Transition name="nowify-text" mode="out-in">
+            <div :key="trackVisualKey">
+              <h1>{{ player.trackTitle }}</h1>
+              <h2 class="opacity-80">{{ trackArtistsLabel }}</h2>
+            </div>
+          </Transition>
+        </div>
       </div>
       <div
-        class="w-full p-[var(--spacing-m)] text-center md:w-1/2 md:max-w-[495px] md:text-left"
+        v-else
+        key="idle"
+        class="flex flex-1 flex-col items-center justify-center p-[var(--spacing-l)] md:flex-row md:p-[10%]"
       >
-        <h1>{{ player.trackTitle }}</h1>
-        <h2 class="opacity-80">{{ trackArtistsLabel }}</h2>
+        <h1 class="text-center">No music is playing 😔</h1>
       </div>
-    </div>
-    <div
-      v-else
-      class="flex flex-1 flex-col items-center justify-center p-[var(--spacing-l)] md:flex-row md:p-[10%]"
-    >
-      <h1 class="text-center">No music is playing 😔</h1>
-    </div>
+    </Transition>
 
     <div
       class="flex shrink-0 flex-wrap items-center justify-center gap-4 px-[var(--spacing-l)] pb-[var(--spacing-xl)] pt-[var(--spacing-m)]"
     >
       <button
         type="button"
-        class="flex h-14 w-14 items-center justify-center rounded-full border border-current/25 bg-black/15 text-[var(--color-text-primary)] transition-opacity hover:bg-black/25 disabled:cursor-not-allowed disabled:opacity-40"
+        class="flex h-14 w-14 items-center justify-center rounded-full border border-current/25 bg-black/15 text-[var(--color-text-primary)] transition-interactive hover:bg-black/25 hover:scale-105 active:scale-95 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:scale-100"
         :disabled="controlPending"
         aria-label="Previous track"
         @click="sendControl('previous')"
@@ -52,43 +63,49 @@
           />
         </svg>
       </button>
+      <span class="relative inline-flex h-16 w-16 items-center justify-center">
+        <Transition name="nowify-play" mode="out-in">
+          <button
+            v-if="player.playing"
+            key="pause"
+            type="button"
+            class="absolute inset-0 flex items-center justify-center rounded-full border border-current/25 bg-black/15 text-[var(--color-text-primary)] transition-interactive hover:bg-black/25 hover:scale-105 active:scale-95 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:scale-100"
+            :disabled="controlPending"
+            aria-label="Pause"
+            @click="sendControl('pause')"
+          >
+            <svg
+              class="h-8 w-8"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+              aria-hidden="true"
+            >
+              <path d="M6 5h4v14H6V5zm8 0h4v14h-4V5z" />
+            </svg>
+          </button>
+          <button
+            v-else
+            key="play"
+            type="button"
+            class="absolute inset-0 flex items-center justify-center rounded-full border border-current/25 bg-black/15 text-[var(--color-text-primary)] transition-interactive hover:bg-black/25 hover:scale-105 active:scale-95 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:scale-100"
+            :disabled="controlPending"
+            aria-label="Play"
+            @click="sendControl('play')"
+          >
+            <svg
+              class="h-8 w-8 pl-1"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+              aria-hidden="true"
+            >
+              <path d="M8 5v14l11-7-11-7z" />
+            </svg>
+          </button>
+        </Transition>
+      </span>
       <button
-        v-if="player.playing"
         type="button"
-        class="flex h-16 w-16 items-center justify-center rounded-full border border-current/25 bg-black/15 text-[var(--color-text-primary)] transition-opacity hover:bg-black/25 disabled:cursor-not-allowed disabled:opacity-40"
-        :disabled="controlPending"
-        aria-label="Pause"
-        @click="sendControl('pause')"
-      >
-        <svg
-          class="h-8 w-8"
-          viewBox="0 0 24 24"
-          fill="currentColor"
-          aria-hidden="true"
-        >
-          <path d="M6 5h4v14H6V5zm8 0h4v14h-4V5z" />
-        </svg>
-      </button>
-      <button
-        v-else
-        type="button"
-        class="flex h-16 w-16 items-center justify-center rounded-full border border-current/25 bg-black/15 text-[var(--color-text-primary)] transition-opacity hover:bg-black/25 disabled:cursor-not-allowed disabled:opacity-40"
-        :disabled="controlPending"
-        aria-label="Play"
-        @click="sendControl('play')"
-      >
-        <svg
-          class="h-8 w-8 pl-1"
-          viewBox="0 0 24 24"
-          fill="currentColor"
-          aria-hidden="true"
-        >
-          <path d="M8 5v14l11-7-11-7z" />
-        </svg>
-      </button>
-      <button
-        type="button"
-        class="flex h-14 w-14 items-center justify-center rounded-full border border-current/25 bg-black/15 text-[var(--color-text-primary)] transition-opacity hover:bg-black/25 disabled:cursor-not-allowed disabled:opacity-40"
+        class="flex h-14 w-14 items-center justify-center rounded-full border border-current/25 bg-black/15 text-[var(--color-text-primary)] transition-interactive hover:bg-black/25 hover:scale-105 active:scale-95 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:scale-100"
         :disabled="controlPending"
         aria-label="Next track"
         @click="sendControl('next')"
@@ -106,7 +123,7 @@
       </button>
       <button
         type="button"
-        class="flex h-14 w-14 items-center justify-center rounded-full border border-current/25 bg-black/15 text-[var(--color-text-primary)] transition-opacity hover:bg-black/25 disabled:cursor-not-allowed disabled:opacity-40"
+        class="flex h-14 w-14 items-center justify-center rounded-full border border-current/25 bg-black/15 text-[var(--color-text-primary)] transition-interactive hover:bg-black/25 hover:scale-105 active:scale-95 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:scale-100"
         :disabled="controlPending"
         aria-label="View queue"
         :aria-expanded="queueOpen"
@@ -124,30 +141,34 @@
         </svg>
       </button>
     </div>
-    <p
-      v-if="controlError"
-      class="pb-[var(--spacing-m)] text-center text-sm opacity-80"
-      role="status"
-    >
-      {{ controlError }}
-    </p>
+    <Transition name="nowify-err">
+      <p
+        v-if="controlError"
+        :key="controlError"
+        class="pb-[var(--spacing-m)] text-center text-sm opacity-80"
+        role="status"
+      >
+        {{ controlError }}
+      </p>
+    </Transition>
 
     <Teleport to="body">
-      <div
-        v-if="queueOpen"
-        class="fixed inset-0 z-[100] flex items-end justify-center p-0 md:items-center md:p-6"
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="queue-dialog-title"
-      >
+      <Transition name="nowify-queue">
         <div
-          class="absolute inset-0 bg-black/55"
-          aria-hidden="true"
-          @click="queueOpen = false"
-        />
-        <div
-          class="relative flex max-h-[min(85vh,640px)] w-full max-w-lg flex-col rounded-t-2xl border border-current/20 bg-[var(--colour-background-now-playing)] text-[var(--color-text-primary)] shadow-lg md:rounded-2xl"
+          v-if="queueOpen"
+          class="fixed inset-0 z-[100] flex items-end justify-center p-0 md:items-center md:p-6"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="queue-dialog-title"
         >
+          <div
+            class="absolute inset-0 bg-black/55"
+            aria-hidden="true"
+            @click="queueOpen = false"
+          />
+          <div
+            class="nowify-queue-panel relative flex max-h-[min(85vh,640px)] w-full max-w-lg flex-col rounded-t-2xl border border-current/20 bg-[var(--colour-background-now-playing)] text-[var(--color-text-primary)] shadow-lg md:rounded-2xl"
+          >
           <div
             class="flex items-center justify-between gap-3 border-b border-current/15 px-4 py-3"
           >
@@ -157,7 +178,7 @@
             <div class="flex items-center gap-2">
               <button
                 type="button"
-                class="rounded-full border border-current/25 bg-black/15 px-3 py-1.5 text-sm transition-opacity hover:bg-black/25 disabled:opacity-40"
+                class="rounded-full border border-current/25 bg-black/15 px-3 py-1.5 text-sm transition-interactive hover:bg-black/25 hover:scale-[1.02] active:scale-[0.98] disabled:opacity-40 disabled:hover:scale-100"
                 :disabled="queueLoading"
                 @click="fetchQueue"
               >
@@ -165,7 +186,7 @@
               </button>
               <button
                 type="button"
-                class="flex h-10 w-10 items-center justify-center rounded-full border border-current/25 bg-black/15 transition-opacity hover:bg-black/25"
+                class="flex h-10 w-10 items-center justify-center rounded-full border border-current/25 bg-black/15 transition-interactive hover:bg-black/25 hover:scale-105 active:scale-95"
                 aria-label="Close queue"
                 @click="queueOpen = false"
               >
@@ -241,7 +262,7 @@
                     :key="queueItemKey(item, index)"
                   >
                     <div
-                      class="flex gap-3 rounded-lg p-2 opacity-95"
+                      class="flex gap-3 rounded-lg p-2 opacity-95 transition-interactive hover:bg-black/10"
                     >
                       <img
                         v-if="queueItemImage(item)"
@@ -289,7 +310,8 @@
             </ul>
           </div>
         </div>
-      </div>
+        </div>
+      </Transition>
     </Teleport>
   </div>
 </template>
@@ -352,6 +374,11 @@ const queueCurrentlyPlaying = computed(
 const queueUpNext = computed(() => queuePayload.value?.queue ?? [])
 
 const trackArtistsLabel = computed(() => props.player.trackArtists.join(", "))
+
+const trackVisualKey = computed(
+  () =>
+    `${props.player.trackTitle}\u0000${props.player.trackAlbum?.image ?? ""}`,
+)
 
 function queueItemTitle(item: QueueMedia): string {
   return item.name?.trim() || "Unknown"
@@ -665,3 +692,100 @@ watch(playerData, (val) => {
   getAlbumColours()
 })
 </script>
+
+<style scoped>
+.nowify-panel-enter-active,
+.nowify-panel-leave-active {
+  transition:
+    opacity var(--transition-base) var(--ease-out),
+    transform var(--transition-base) var(--ease-out);
+}
+
+.nowify-panel-enter-from,
+.nowify-panel-leave-to {
+  opacity: 0;
+  transform: translate3d(0, 10px, 0);
+}
+
+.nowify-art-enter-active,
+.nowify-art-leave-active {
+  transition:
+    opacity var(--transition-base) var(--ease-out),
+    transform var(--transition-slow) var(--ease-out);
+}
+
+.nowify-art-enter-from,
+.nowify-art-leave-to {
+  opacity: 0;
+  transform: scale(0.97);
+}
+
+.nowify-text-enter-active,
+.nowify-text-leave-active {
+  transition:
+    opacity var(--transition-base) var(--ease-out),
+    transform var(--transition-base) var(--ease-out);
+}
+
+.nowify-text-enter-from,
+.nowify-text-leave-to {
+  opacity: 0;
+  transform: translate3d(0, 8px, 0);
+}
+
+.nowify-play-enter-active,
+.nowify-play-leave-active {
+  transition:
+    opacity var(--transition-fast) var(--ease-out),
+    transform var(--transition-fast) var(--ease-spring);
+}
+
+.nowify-play-enter-from,
+.nowify-play-leave-to {
+  opacity: 0;
+  transform: scale(0.88);
+}
+
+.nowify-err-enter-active,
+.nowify-err-leave-active {
+  transition:
+    opacity var(--transition-base) var(--ease-out),
+    transform var(--transition-base) var(--ease-out);
+}
+
+.nowify-err-enter-from,
+.nowify-err-leave-to {
+  opacity: 0;
+  transform: translate3d(0, 4px, 0);
+}
+
+.nowify-queue-enter-active,
+.nowify-queue-leave-active {
+  transition: opacity var(--transition-base) var(--ease-out);
+}
+
+.nowify-queue-enter-active .nowify-queue-panel,
+.nowify-queue-leave-active .nowify-queue-panel {
+  transition: transform var(--transition-slow) var(--ease-out);
+}
+
+.nowify-queue-enter-from,
+.nowify-queue-leave-to {
+  opacity: 0;
+}
+
+.nowify-queue-enter-from .nowify-queue-panel {
+  transform: translate3d(0, 28px, 0);
+}
+
+@media (min-width: 768px) {
+  .nowify-queue-enter-from .nowify-queue-panel {
+    transform: translate3d(0, 16px, 0) scale(0.97);
+  }
+}
+
+.nowify-queue-leave-to .nowify-queue-panel {
+  transform: translate3d(0, 12px, 0);
+  opacity: 0.98;
+}
+</style>

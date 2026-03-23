@@ -1,13 +1,21 @@
 <template>
   <div id="app">
-    <Authorise v-if="!auth.status" :auth="auth" :endpoints="endpoints" />
-    <NowPlaying
-      v-else
-      :auth="auth"
-      :player="player"
-      @spotify-track-updated="updateCurrentTrack"
-      @request-refresh-token="requestRefreshTokens"
-    />
+    <Transition name="nowify-view" mode="out-in">
+      <Authorise
+        v-if="!auth.status"
+        key="auth"
+        :auth="auth"
+        :endpoints="endpoints"
+      />
+      <NowPlaying
+        v-else
+        key="now-playing"
+        :auth="auth"
+        :player="player"
+        @spotify-track-updated="updateCurrentTrack"
+        @request-refresh-token="requestRefreshTokens"
+      />
+    </Transition>
   </div>
 </template>
 
@@ -56,3 +64,18 @@ function updateCurrentTrack(value: Record<string, unknown>) {
   Object.assign(player, value)
 }
 </script>
+
+<style scoped>
+.nowify-view-enter-active,
+.nowify-view-leave-active {
+  transition:
+    opacity var(--transition-base) var(--ease-out),
+    transform var(--transition-base) var(--ease-out);
+}
+
+.nowify-view-enter-from,
+.nowify-view-leave-to {
+  opacity: 0;
+  transform: translate3d(0, 14px, 0);
+}
+</style>

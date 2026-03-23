@@ -1,24 +1,35 @@
 <template>
   <div
-    class="flex min-h-screen w-full flex-col items-center justify-center bg-[var(--colour-background-now-playing)] px-6 py-6 text-[var(--color-text-primary)]"
+    class="flex min-h-screen w-full flex-col items-center justify-center bg-[var(--colour-background-now-playing)] px-6 py-6 text-[var(--color-text-primary)] transition-theme"
   >
-    <h1>Nowify</h1>
+    <h1 class="animate-fade-up opacity-0" style="animation-delay: 40ms">
+      Nowify
+    </h1>
 
-    <p class="mb-[var(--spacing-m)] max-w-[480px] text-center">
+    <p
+      class="mb-[var(--spacing-m)] max-w-[480px] text-center animate-fade-up opacity-0"
+      style="animation-delay: 120ms"
+    >
       Nowify is a simple Spotify 'Now Playing' screen designed for the Raspberry
       Pi. Login with Spotify below and start playing some music!
     </p>
 
     <button
       type="button"
-      class="mb-[var(--spacing-l)] inline-flex min-h-8 cursor-pointer items-center justify-center border border-transparent bg-spotify px-[var(--spacing-xl)] py-[var(--spacing-l)] text-center uppercase tracking-wide text-[var(--color-text-primary)] shadow-none transition-transform duration-200 ease-in-out hover:scale-[1.02]"
+      class="mb-[var(--spacing-l)] inline-flex min-h-8 cursor-pointer items-center justify-center border border-transparent bg-spotify px-[var(--spacing-xl)] py-[var(--spacing-l)] text-center uppercase tracking-wide text-[var(--color-text-primary)] shadow-none transition-interactive hover:scale-[1.02] active:scale-[0.98] animate-fade-up opacity-0"
+      style="animation-delay: 200ms"
       @click="initAuthorise"
     >
       Login with Spotify
     </button>
 
-    <p class="text-[0.7em] opacity-80">
-      <a href="https://github.com/jonashcroft/Nowify" class="text-inherit"
+    <p
+      class="text-[0.7em] animate-fade-in-muted opacity-0"
+      style="animation-delay: 320ms"
+    >
+      <a
+        href="https://github.com/jonashcroft/Nowify"
+        class="text-inherit underline decoration-transparent underline-offset-2 transition-interactive hover:decoration-current"
         >View on GitHub</a
       >
     </p>
