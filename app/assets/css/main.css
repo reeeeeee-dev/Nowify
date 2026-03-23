@@ -2,6 +2,14 @@
 @tailwind components;
 @tailwind utilities;
 
+@font-face {
+  font-family: "Spotify Mix UI Title";
+  src: url("../fonts/spotify_mix_ui_title_extrabold.otf") format("opentype");
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
+}
+
 @layer base {
   :root {
     --spacing-m: 1rem;
@@ -13,8 +21,10 @@
     --color-brand-spotify: #1db954;
     --font-size-base: 16px;
     --font-body: "Source Sans Pro", Helvetica, Arial, sans-serif;
+    --font-heading: "Spotify Mix UI Title", "Source Sans Pro", Helvetica, Arial,
+      sans-serif;
     --font-weight-body: 400;
-    --font-weight-heading: 900;
+    --font-weight-heading: 800;
     --body-line-height: 1.1;
   }
 
@@ -35,7 +45,9 @@
   }
 
   h1 {
-    @apply mb-[var(--spacing-m)] mt-0 text-[2em] font-black tracking-tight;
+    @apply mb-[var(--spacing-m)] mt-0 text-[2em] tracking-tight;
+    font-family: var(--font-heading);
+    font-weight: var(--font-weight-heading);
     word-break: break-word;
   }
 

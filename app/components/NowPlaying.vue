@@ -17,7 +17,7 @@
       <div
         class="w-full p-[var(--spacing-m)] text-center md:w-1/2 md:max-w-[495px] md:text-left"
       >
-        <h1 class="font-black">{{ player.trackTitle }}</h1>
+        <h1>{{ player.trackTitle }}</h1>
         <h2 class="opacity-80">{{ trackArtistsLabel }}</h2>
       </div>
     </div>
@@ -25,7 +25,7 @@
       v-else
       class="flex min-h-screen w-full flex-col items-center justify-center bg-[var(--colour-background-now-playing)] p-[var(--spacing-l)] text-[var(--color-text-primary)] md:flex-row md:p-[10%]"
     >
-      <h1 class="text-center font-black">No music is playing 😔</h1>
+      <h1 class="text-center">No music is playing 😔</h1>
     </div>
   </div>
 </template>
