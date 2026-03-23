@@ -53,6 +53,7 @@ export default defineNuxtConfig({
       nodeCompat: true,
       wrangler: {
         name: "nowify",
+        keep_vars: true,
         /** Prefer Custom Domains over zone routes — Cloudflare provisions DNS + TLS for the hostname. */
         routes: [
           {
@@ -63,4 +64,4 @@ export default defineNuxtConfig({
       },
     },
   },
-})
+});
