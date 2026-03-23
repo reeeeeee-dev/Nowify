@@ -32,14 +32,10 @@ const props = defineProps<{
   auth: {
     status: boolean
     clientId: string
-    clientSecret: string
     authCode: string
-    accessToken: string
-    refreshToken: string
   }
   endpoints: {
     auth: string
-    token: string
   }
 }>()
 
@@ -74,66 +70,24 @@ function initAuthorise() {
   window.location.href = setAuthUrl()
 }
 
-async function requestAccessTokens(
-  grantType: "authorization_code" | "refresh_token" = "authorization_code",
-) {
-  const fetchData: Record<string, string> = {
-    grant_type: grantType,
-  }
-
-  if (grantType === "authorization_code") {
-    fetchData.code = props.auth.authCode
-    fetchData.redirect_uri = window.location.origin
-  }
-
-  if (grantType === "refresh_token") {
-    fetchData.refresh_token = props.auth.refreshToken
-  }
-
-  const queryBody = new URLSearchParams(fetchData).toString()
-  const clientDetails = btoa(
-    `${props.auth.clientId}:${props.auth.clientSecret}`,
-  )
-
-  const res = await fetch(`${props.endpoints.token}`, {
+async function exchangeAuthCode() {
+  const res = await fetch("/api/spotify/token", {
     method: "POST",
     headers: {
-      "Content-Type": "application/x-www-form-urlencoded",
-      Authorization: `Basic ${clientDetails}`,
+      "Content-Type": "application/json",
     },
-    body: queryBody,
+    credentials: "include",
+    body: JSON.stringify({
+      grant_type: "authorization_code",
+      code: props.auth.authCode,
+      redirect_uri: window.location.origin,
+    }),
   })
 
-  const accessTokenResponse = await res.json()
-  handleAccessTokenResponse(accessTokenResponse)
-}
+  const body = (await res.json()) as Record<string, unknown>
 
-function handleAccessTokenResponse(
-  accessTokenResponse: Record<string, unknown> & {
-    error?: { error?: string; status?: number }
-  },
-) {
-  if (accessTokenResponse.error?.error === "invalid_grant") {
-    return
-  }
-
-  if (accessTokenResponse.error?.status === 401) {
-    props.auth.authCode = ""
-    props.auth.status = false
-    return
-  }
-
-  const token = accessTokenResponse.access_token
-  if (typeof token === "string") {
-    props.auth.accessToken = token
-
-    const refresh = accessTokenResponse.refresh_token
-    if (typeof refresh === "string") {
-      props.auth.refreshToken = refresh
-    }
-
+  if (res.ok && body.ok === true) {
     props.auth.status = true
-
     const path =
       location.protocol +
       "//" +
@@ -145,30 +99,32 @@ function handleAccessTokenResponse(
         .replace(/[?&]state=[^&]+/, "")
         .replace(/^&/, "?")
     window.history.replaceState(null, "", path)
+    return
+  }
+
+  const err = body.error
+  if (err === "invalid_grant") {
+    return
+  }
+  if (
+    typeof err === "object" &&
+    err !== null &&
+    "status" in err &&
+    (err as { status?: number }).status === 401
+  ) {
+    props.auth.authCode = ""
   }
 }
 
 onMounted(() => {
   getUrlAuthCode()
-  if (props.auth.refreshToken) {
-    requestAccessTokens("refresh_token")
-  }
 })
 
 watch(
   () => props.auth.authCode,
   () => {
     if (props.auth.authCode) {
-      requestAccessTokens("authorization_code")
-    }
-  },
-)
-
-watch(
-  () => props.auth.status,
-  () => {
-    if (props.auth.refreshToken) {
-      requestAccessTokens("refresh_token")
+      exchangeAuthCode()
     }
   },
 )

@@ -21,10 +21,14 @@ export default defineNuxtConfig({
     },
   },
   runtimeConfig: {
+    /** Public: appears in the Spotify authorize URL anyway. */
     public: {
       spotifyClientId: "",
-      spotifyClientSecret: "",
     },
+    /** Server-only — never exposed to the browser bundle. Set via NUXT_SPOTIFY_CLIENT_SECRET */
+    spotifyClientSecret: "",
+    /** Server-only — encrypts the HttpOnly session cookie (use a long random string). */
+    sessionSecret: "",
   },
   typescript: {
     strict: true,

@@ -38,11 +38,6 @@ import { computed, onBeforeUnmount, onMounted, ref, watch } from "vue"
 const props = defineProps<{
   auth: {
     status: boolean
-    accessToken: string
-  }
-  endpoints: {
-    base: string
-    nowPlaying: string
   }
   player: {
     playing: boolean
@@ -81,14 +76,14 @@ async function getNowPlaying() {
   let data = getEmptyPlayer()
 
   try {
-    const response = await fetch(
-      `${props.endpoints.base}/${props.endpoints.nowPlaying}`,
-      {
-        headers: {
-          Authorization: `Bearer ${props.auth.accessToken}`,
-        },
-      },
-    )
+    const response = await fetch("/api/spotify/now-playing", {
+      credentials: "include",
+    })
+
+    if (response.status === 401) {
+      handleExpiredToken()
+      return
+    }
 
     if (!response.ok) {
       throw new Error(`An error has occured: ${response.status}`)

@@ -4,7 +4,6 @@
     <NowPlaying
       v-else
       :auth="auth"
-      :endpoints="endpoints"
       :player="player"
       @spotify-track-updated="updateCurrentTrack"
       @request-refresh-token="requestRefreshTokens"
@@ -13,25 +12,18 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, watch } from "vue"
-import { getStoredAuth, setStoredAuth } from "~/utils/auth"
+import { onMounted, reactive } from "vue"
 
 const config = useRuntimeConfig()
 
 const auth = reactive({
   status: false,
   clientId: config.public.spotifyClientId as string,
-  clientSecret: config.public.spotifyClientSecret as string,
   authCode: "",
-  accessToken: "",
-  refreshToken: "",
 })
 
 const endpoints = {
   auth: "https://accounts.spotify.com/authorize",
-  token: "https://accounts.spotify.com/api/token",
-  base: "https://api.spotify.com/v1",
-  nowPlaying: "me/player/currently-playing",
 }
 
 const player = reactive({
@@ -44,17 +36,19 @@ const player = reactive({
   },
 })
 
-Object.assign(auth, getStoredAuth())
+onMounted(async () => {
+  const { authenticated } = await $fetch<{ authenticated: boolean }>(
+    "/api/auth/session",
+    { credentials: "include" },
+  )
+  auth.status = authenticated
+})
 
-watch(
-  auth,
-  () => {
-    setStoredAuth({ ...auth })
-  },
-  { deep: true },
-)
-
-function requestRefreshTokens() {
+async function requestRefreshTokens() {
+  await $fetch("/api/auth/logout", {
+    method: "POST",
+    credentials: "include",
+  })
   auth.status = false
 }
 
